@@ -11,25 +11,25 @@
         android:id="@+id/button1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Open Website 1" />
+        android:text="D.El.Ed TextBooks" />
 
     <Button
         android:id="@+id/button2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Open Website 2" />
+        android:text="School TextBooks" />
 
     <Button
         android:id="@+id/button3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Open Website 3" />
+        android:text="____Hand Books____" />
 
     <Button
         android:id="@+id/button4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Open Website 4" />
+        android:text="___About The App___" />
 
 </LinearLayout>
 

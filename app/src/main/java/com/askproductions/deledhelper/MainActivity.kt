@@ -47,19 +47,19 @@ class MainActivity : ComponentActivity() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Button(onClick = { openWebsite("https://arjun-dev-lab.github.io/EduVerseApps/malayalam%20d.el.ed/malayalam-d.el.ed.html") }) {
-                Text("Open Website 1")
+                Text("D.El.Ed TextBooks")
             }
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = { openWebsite("https://arjun-dev-lab.github.io/EduVerseApps/malayalam%20d.el.ed/school%20resource/resource.html") }) {
-                Text("Open Website 2")
+                Text("School TextBooks")
             }
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = { openWebsite("https://arjun-dev-lab.github.io/EduVerseApps/malayalam%20d.el.ed/HandBooks/handbook.html") }) {
-                Text("Open Website 3")
+                Text("___Hand Books___")
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { openWebsite("https://www.google.com") }) {
-                Text("Open Website 4")
+            Button(onClick = { openWebsite("https://arjun-dev-lab.github.io/EduVerseApps/D.El.Ed%20Helper/about.html") }) {
+                Text("_____About_____")
             }
         }
     }
