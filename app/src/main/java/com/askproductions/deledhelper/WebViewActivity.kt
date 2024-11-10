@@ -22,7 +22,7 @@ class WebViewActivity : AppCompatActivity() {
 
         // Initialize Facebook Audience Network
         AudienceNetworkAds.initialize(this)
-        AdSettings.setTestMode(true)
+        AdSettings.setTestMode(false)
 
         // Load URL passed from the MainActivity
         val url = intent.getStringExtra("url") ?: "https://www.google.com"

@@ -1,10 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
     android:gravity="center">
+
+    <!-- Top Banner Ads -->
+    <LinearLayout
+        android:id="@+id/topAdContainer1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center" />
+
+    <LinearLayout
+        android:id="@+id/topAdContainer2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -36,14 +52,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="___About The App___" />
-
     </LinearLayout>
 
+    <!-- Bottom Banner Ads -->
     <LinearLayout
-        android:id="@+id/adContainer"
+        android:id="@+id/bottomAdContainer1"
         android:layout_width="match_parent"
         android:layout_height="77dp"
-        android:layout_gravity="bottom"
-        android:orientation="vertical" />
+        android:orientation="vertical"
+        android:gravity="center" />
 
+    <LinearLayout
+        android:id="@+id/bottomAdContainer2"
+        android:layout_width="match_parent"
+        android:layout_height="77dp"
+        android:orientation="vertical"
+        android:gravity="center" />
 </LinearLayout>
+
