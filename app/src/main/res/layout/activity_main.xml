@@ -11,16 +11,16 @@
     <LinearLayout
         android:id="@+id/topAdContainer1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center" />
+        android:layout_height="71dp"
+        android:gravity="center"
+        android:orientation="vertical" />
 
     <LinearLayout
         android:id="@+id/topAdContainer2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center" />
+        android:layout_height="76dp"
+        android:gravity="center"
+        android:orientation="vertical" />
 
     <LinearLayout
         android:layout_width="match_parent"

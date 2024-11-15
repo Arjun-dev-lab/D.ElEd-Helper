@@ -10,14 +10,18 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.facebook.ads.*
+import com.ironsource.mediationsdk.IronSource
+import com.ironsource.mediationsdk.IronSourceBannerLayout
+import com.ironsource.mediationsdk.ISBannerSize
+import com.ironsource.mediationsdk.logger.IronSourceError
+import com.ironsource.mediationsdk.sdk.BannerListener
+import com.ironsource.mediationsdk.sdk.RewardedVideoListener
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var topAdView1: AdView
-    private lateinit var topAdView2: AdView
-    private lateinit var bottomAdView1: AdView
-    private lateinit var bottomAdView2: AdView
-    private var rewardedVideoAd: RewardedVideoAd? = null
+    private lateinit var fbTopAdView: AdView
+    private lateinit var fbBottomAdView: AdView
+    private var ironSourceBanner: IronSourceBannerLayout? = null
     private var websiteUrl: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,14 +30,20 @@ class MainActivity : AppCompatActivity() {
 
         // Initialize Facebook Audience Network
         AudienceNetworkAds.initialize(this)
-        AdSettings.setTestMode(false)
+        AdSettings.setTestMode(true) // Set to 'true' for testing
+
+        // Initialize IronSource
+        IronSource.init(this, "2020eb075") // Replace with your IronSource app key
 
         // Check for internet connectivity and show a popup if there’s no connection
         if (!isInternetConnected()) {
             showNoInternetDialog()
         }
 
-        // Load Rewarded Video Ad
+        // Set up Facebook and IronSource banner ads
+        setupBannerAds()
+
+        // Set up IronSource rewarded ads
         setupRewardedAd()
 
         // Set up buttons with rewarded ad actions
@@ -49,19 +59,14 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.button4).setOnClickListener {
             showRewardedAd("https://arjun-dev-lab.github.io/EduVerseApps/D.El.Ed%20Helper/about.html")
         }
-
-        // Set up Facebook Banner Ads
-        setupBannerAds()
     }
 
-    // Method to check internet connectivity
     private fun isInternetConnected(): Boolean {
         val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo = connectivityManager.activeNetworkInfo
         return networkInfo != null && networkInfo.isConnected
     }
 
-    // Show dialog if no internet
     private fun showNoInternetDialog() {
         AlertDialog.Builder(this)
             .setTitle("No Internet Connection")
@@ -71,57 +76,61 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    // Set up banner ads
     private fun setupBannerAds() {
-        // Top banner ad 1
-        topAdView1 = AdView(this, "3894902787424141_3894903337424086", AdSize.BANNER_HEIGHT_50)
-        findViewById<LinearLayout>(R.id.topAdContainer1).addView(topAdView1)
-        topAdView1.loadAd()
+        // Facebook Banner Ad
+        fbTopAdView = AdView(this, "3894902787424141_3894903337424086", AdSize.BANNER_HEIGHT_50)
+        findViewById<LinearLayout>(R.id.topAdContainer1).addView(fbTopAdView)
+        fbTopAdView.loadAd()
 
-        // Top banner ad 2
-        topAdView2 = AdView(this, "3894902787424141_3903266989921054", AdSize.BANNER_HEIGHT_50)
-        findViewById<LinearLayout>(R.id.topAdContainer2).addView(topAdView2)
-        topAdView2.loadAd()
+        // IronSource Banner Ad
+        ironSourceBanner = IronSource.createBanner(this, ISBannerSize.BANNER)
+        findViewById<LinearLayout>(R.id.bottomAdContainer1).addView(ironSourceBanner)
 
-        // Bottom banner ad 1
-        bottomAdView1 = AdView(this, "3894902787424141_3903267293254357", AdSize.BANNER_HEIGHT_50)
-        findViewById<LinearLayout>(R.id.bottomAdContainer1).addView(bottomAdView1)
-        bottomAdView1.loadAd()
+        ironSourceBanner?.bannerListener = object : BannerListener {
+            override fun onBannerAdLoaded() {
+                Toast.makeText(this@MainActivity, "IronSource banner ad loaded", Toast.LENGTH_SHORT).show()
+            }
 
-        // Bottom banner ad 2
-        bottomAdView2 = AdView(this, "3894902787424141_3903267706587649", AdSize.BANNER_HEIGHT_50)
-        findViewById<LinearLayout>(R.id.bottomAdContainer2).addView(bottomAdView2)
-        bottomAdView2.loadAd()
+            override fun onBannerAdLoadFailed(error: IronSourceError?) {
+                Toast.makeText(
+                    this@MainActivity,
+                    "IronSource banner load failed: ${error?.errorMessage}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            override fun onBannerAdClicked() {}
+            override fun onBannerAdScreenPresented() {}
+            override fun onBannerAdScreenDismissed() {}
+            override fun onBannerAdLeftApplication() {}
+        }
+
+        ironSourceBanner?.let { IronSource.loadBanner(it) }
     }
 
-    // Method to set up rewarded ad
     private fun setupRewardedAd() {
-        rewardedVideoAd = RewardedVideoAd(this, "3894902787424141_3894905060757247")
-        rewardedVideoAd?.loadAd(
-            rewardedVideoAd?.buildLoadAdConfig()?.withAdListener(object : RewardedVideoAdListener {
-                override fun onError(ad: Ad?, error: AdError) {
-                    Toast.makeText(this@MainActivity, "Error loading ad: ${error.errorMessage}", Toast.LENGTH_SHORT).show()
+        IronSource.setRewardedVideoListener(object : RewardedVideoListener {
+            override fun onRewardedVideoAdOpened() {}
+            override fun onRewardedVideoAdClosed() {}
+            override fun onRewardedVideoAvailabilityChanged(available: Boolean) {
+                if (available) {
+                    Toast.makeText(this@MainActivity, "Rewarded ad available", Toast.LENGTH_SHORT).show()
                 }
-
-                override fun onAdLoaded(ad: Ad?) {}
-                override fun onAdClicked(ad: Ad?) {}
-                override fun onLoggingImpression(ad: Ad?) {}
-
-                override fun onRewardedVideoCompleted() {
-                    websiteUrl?.let { openWebsite(it) }
-                }
-
-                override fun onRewardedVideoClosed() {
-                    rewardedVideoAd?.loadAd()
-                }
-            })?.build()
-        )
+            }
+            override fun onRewardedVideoAdStarted() {}
+            override fun onRewardedVideoAdEnded() {}
+            override fun onRewardedVideoAdRewarded(placement: com.ironsource.mediationsdk.model.Placement) {
+                websiteUrl?.let { openWebsite(it) }
+            }
+            override fun onRewardedVideoAdShowFailed(error: IronSourceError?) {}
+            override fun onRewardedVideoAdClicked(placement: com.ironsource.mediationsdk.model.Placement?) {}
+        })
     }
 
     private fun showRewardedAd(url: String) {
         websiteUrl = url
-        if (rewardedVideoAd?.isAdLoaded == true) {
-            rewardedVideoAd?.show()
+        if (IronSource.isRewardedVideoAvailable()) {
+            IronSource.showRewardedVideo()
         } else {
             Toast.makeText(this, "Ad not loaded yet. Opening website...", Toast.LENGTH_SHORT).show()
             openWebsite(url)
@@ -136,11 +145,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        topAdView1.destroy()
-        topAdView2.destroy()
-        bottomAdView1.destroy()
-        bottomAdView2.destroy()
-        rewardedVideoAd?.destroy()
+        fbTopAdView.destroy()
+        fbBottomAdView.destroy()
+        ironSourceBanner?.let { IronSource.destroyBanner(it) }
         super.onDestroy()
     }
 }

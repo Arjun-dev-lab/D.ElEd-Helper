@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
     implementation("com.facebook.android:audience-network-sdk:6.18.0")
+    implementation("com.ironsource.sdk:mediationsdk:7.5.1") // Added IronSource SDK
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
