@@ -12,7 +12,7 @@ import com.facebook.ads.*
 class WebViewActivity : AppCompatActivity() {
 
     private lateinit var interstitialAd: InterstitialAd
-    private lateinit var adView: AdView
+    private var adView: AdView? = null
     private val handler = Handler(Looper.getMainLooper())
     private val adInterval = 300000L // 5 minutes in milliseconds
 
@@ -22,7 +22,6 @@ class WebViewActivity : AppCompatActivity() {
 
         // Initialize Facebook Audience Network
         AudienceNetworkAds.initialize(this)
-        AdSettings.setTestMode(false)
 
         // Load URL passed from the MainActivity
         val url = intent.getStringExtra("url") ?: "https://www.google.com"
@@ -34,7 +33,7 @@ class WebViewActivity : AppCompatActivity() {
         // Set up Banner Ad
         adView = AdView(this, "3894902787424141_3903244319923321", AdSize.BANNER_HEIGHT_50)
         findViewById<LinearLayout>(R.id.adContainer).addView(adView)
-        adView.loadAd()
+        adView?.loadAd()
 
         // Set up Interstitial Ad
         interstitialAd = InterstitialAd(this, "3894902787424141_3894903594090727")
@@ -58,11 +57,20 @@ class WebViewActivity : AppCompatActivity() {
             interstitialAd.buildLoadAdConfig()
                 .withAdListener(object : InterstitialAdListener {
                     override fun onInterstitialDisplayed(ad: Ad?) {}
+
                     override fun onInterstitialDismissed(ad: Ad?) {
                         loadInterstitialAd() // Reload after dismissed
                     }
-                    override fun onError(ad: Ad?, error: AdError) {}
-                    override fun onAdLoaded(ad: Ad?) {}
+
+                    override fun onError(ad: Ad?, error: AdError) {
+                        // Log the error for debugging
+                        println("Interstitial Ad Error: ${error.errorMessage}")
+                    }
+
+                    override fun onAdLoaded(ad: Ad?) {
+                        println("Interstitial Ad Loaded")
+                    }
+
                     override fun onAdClicked(ad: Ad?) {}
                     override fun onLoggingImpression(ad: Ad?) {}
                 })
@@ -71,7 +79,7 @@ class WebViewActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        adView.destroy()
+        adView?.destroy()
         interstitialAd.destroy()
         handler.removeCallbacksAndMessages(null) // Stop the handler
         super.onDestroy()

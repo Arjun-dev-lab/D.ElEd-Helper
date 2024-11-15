@@ -20,9 +20,8 @@ import com.ironsource.mediationsdk.sdk.RewardedVideoListener
 class MainActivity : AppCompatActivity() {
 
     private lateinit var fbTopAdView: AdView
-    private lateinit var fbBottomAdView: AdView
     private var ironSourceBanner: IronSourceBannerLayout? = null
-    private var websiteUrl: String? = null
+    private var websiteUrl: String? = null // URL to open after user closes ad
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,20 +29,18 @@ class MainActivity : AppCompatActivity() {
 
         // Initialize Facebook Audience Network
         AudienceNetworkAds.initialize(this)
-        AdSettings.setTestMode(true) // Set to 'true' for testing
+        AdSettings.setTestMode(true) // Use true for testing, false for production
 
         // Initialize IronSource
         IronSource.init(this, "2020eb075") // Replace with your IronSource app key
 
-        // Check for internet connectivity and show a popup if there’s no connection
+        // Check for internet connectivity
         if (!isInternetConnected()) {
             showNoInternetDialog()
         }
 
-        // Set up Facebook and IronSource banner ads
+        // Set up banner and rewarded ads
         setupBannerAds()
-
-        // Set up IronSource rewarded ads
         setupRewardedAd()
 
         // Set up buttons with rewarded ad actions
@@ -87,18 +84,8 @@ class MainActivity : AppCompatActivity() {
         findViewById<LinearLayout>(R.id.bottomAdContainer1).addView(ironSourceBanner)
 
         ironSourceBanner?.bannerListener = object : BannerListener {
-            override fun onBannerAdLoaded() {
-                Toast.makeText(this@MainActivity, "IronSource banner ad loaded", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onBannerAdLoadFailed(error: IronSourceError?) {
-                Toast.makeText(
-                    this@MainActivity,
-                    "IronSource banner load failed: ${error?.errorMessage}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
+            override fun onBannerAdLoaded() {}
+            override fun onBannerAdLoadFailed(error: IronSourceError?) {}
             override fun onBannerAdClicked() {}
             override fun onBannerAdScreenPresented() {}
             override fun onBannerAdScreenDismissed() {}
@@ -110,19 +97,38 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupRewardedAd() {
         IronSource.setRewardedVideoListener(object : RewardedVideoListener {
-            override fun onRewardedVideoAdOpened() {}
-            override fun onRewardedVideoAdClosed() {}
+            override fun onRewardedVideoAdOpened() {
+                Toast.makeText(this@MainActivity, "Ad started. Please watch to unlock the website.", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onRewardedVideoAdClosed() {
+                // Open the website manually after ad closes
+                websiteUrl?.let {
+                    Toast.makeText(this@MainActivity, "Ad completed. Opening website...", Toast.LENGTH_SHORT).show()
+                    openWebsite(it)
+                }
+                websiteUrl = null // Reset the URL after opening
+            }
+
             override fun onRewardedVideoAvailabilityChanged(available: Boolean) {
-                if (available) {
-                    Toast.makeText(this@MainActivity, "Rewarded ad available", Toast.LENGTH_SHORT).show()
+                if (!available) {
+                    Toast.makeText(this@MainActivity, "Rewarded ads are currently unavailable.", Toast.LENGTH_SHORT).show()
                 }
             }
+
             override fun onRewardedVideoAdStarted() {}
+
             override fun onRewardedVideoAdEnded() {}
+
             override fun onRewardedVideoAdRewarded(placement: com.ironsource.mediationsdk.model.Placement) {
-                websiteUrl?.let { openWebsite(it) }
+                // Mark ad completion as successful
+                Toast.makeText(this@MainActivity, "Thank you for watching! You can now proceed.", Toast.LENGTH_SHORT).show()
             }
-            override fun onRewardedVideoAdShowFailed(error: IronSourceError?) {}
+
+            override fun onRewardedVideoAdShowFailed(error: IronSourceError?) {
+                Toast.makeText(this@MainActivity, "Failed to show ad: ${error?.errorMessage}", Toast.LENGTH_SHORT).show()
+            }
+
             override fun onRewardedVideoAdClicked(placement: com.ironsource.mediationsdk.model.Placement?) {}
         })
     }
@@ -132,8 +138,8 @@ class MainActivity : AppCompatActivity() {
         if (IronSource.isRewardedVideoAvailable()) {
             IronSource.showRewardedVideo()
         } else {
-            Toast.makeText(this, "Ad not loaded yet. Opening website...", Toast.LENGTH_SHORT).show()
-            openWebsite(url)
+            // Notify user that ad is not available
+            Toast.makeText(this, "Ad not available. Please try again later.", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -146,7 +152,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         fbTopAdView.destroy()
-        fbBottomAdView.destroy()
         ironSourceBanner?.let { IronSource.destroyBanner(it) }
         super.onDestroy()
     }

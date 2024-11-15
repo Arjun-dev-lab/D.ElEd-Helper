@@ -12,8 +12,8 @@ android {
         applicationId = "com.askproductions.deledhelper"
         minSdk = 24
         targetSdk = 34
-        versionCode = 2
-        versionName = "1.0001"
+        versionCode = 4
+        versionName = "1.0003"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

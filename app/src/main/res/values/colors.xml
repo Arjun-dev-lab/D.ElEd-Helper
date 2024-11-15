@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="deep_blue">#1A237E</color> <!-- Deep Blue Color -->
     <color name="gold">#FFD700</color> <!-- Gold Color -->
+    <color name="Green">#008000</color> <!-- Light Gray Color -->
 </resources>

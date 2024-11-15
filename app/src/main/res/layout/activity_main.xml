@@ -15,58 +15,60 @@
         android:gravity="center"
         android:orientation="vertical" />
 
+    <!-- Buttons Section -->
     <LinearLayout
-        android:id="@+id/topAdContainer2"
-        android:layout_width="match_parent"
-        android:layout_height="76dp"
-        android:gravity="center"
-        android:orientation="vertical" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="298dp"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/button1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="D.El.Ed TextBooks" />
+            android:layout_marginBottom="16dp"
+            android:background="@color/Green"
+            android:text="D.El.Ed TextBooks"
+            android:textColor="@android:color/white"
+            android:textSize="15sp" />
 
         <Button
             android:id="@+id/button2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="School TextBooks" />
+            android:layout_marginBottom="16dp"
+            android:background="@color/Green"
+            android:text="School TextBooks"
+            android:textColor="@android:color/white"
+            android:textSize="15sp" />
 
         <Button
             android:id="@+id/button3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="____Hand Books____" />
+            android:layout_marginBottom="16dp"
+            android:background="@color/Green"
+            android:text="Hand Books"
+            android:textColor="@android:color/white"
+            android:textSize="15sp" />
 
         <Button
             android:id="@+id/button4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="___About The App___" />
+            android:background="@color/Green"
+            android:text="About The App"
+            android:textColor="@android:color/white"
+            android:textSize="15sp" />
     </LinearLayout>
 
     <!-- Bottom Banner Ads -->
     <LinearLayout
         android:id="@+id/bottomAdContainer1"
         android:layout_width="match_parent"
-        android:layout_height="77dp"
-        android:orientation="vertical"
-        android:gravity="center" />
+        android:layout_height="82dp"
+        android:gravity="center"
+        android:orientation="vertical" />
 
-    <LinearLayout
-        android:id="@+id/bottomAdContainer2"
-        android:layout_width="match_parent"
-        android:layout_height="77dp"
-        android:orientation="vertical"
-        android:gravity="center" />
 </LinearLayout>
-
